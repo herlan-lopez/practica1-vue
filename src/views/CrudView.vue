@@ -355,12 +355,12 @@ export default {
 
             return this.contactoArray.filter((item) => {
 
-                const matchesSearch = searchTerm
+             const matchesSearch = searchTerm
                     ? item.nombre.toLowerCase().includes(searchTerm) ||
                     item.correo.toLowerCase().includes(searchTerm) ||
                     item.direccion.toLowerCase().includes(searchTerm)||
-                    item.id.toLowerCase().includes(searchTerm)||
-                    item.telefono.toLowerCase().includes(searchTerm)||
+                    item.id.includes(searchTerm)||
+                    item.telefono.includes(searchTerm)||
                     item.pais.toLowerCase().includes(searchTerm)||
                     item.ciudad.toLowerCase().includes(searchTerm)
                     
