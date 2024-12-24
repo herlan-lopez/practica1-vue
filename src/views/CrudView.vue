@@ -363,8 +363,8 @@ remove(index) {
                 ? item.nombre.toLowerCase().includes(searchTerm) ||
                   item.correo.toLowerCase().includes(searchTerm) ||
                   item.direccion.toLowerCase().includes(searchTerm) ||
-                  item.id.includes(searchTerm) ||
-                  item.telefono.includes(searchTerm) ||
+                  item.id.toString().includes(searchTerm) ||
+                  item.telefono.toString().includes(searchTerm) ||
                   item.pais.toLowerCase().includes(searchTerm) ||
                   item.ciudad.toLowerCase().includes(searchTerm)
                 : true;
