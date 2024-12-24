@@ -294,40 +294,44 @@ export default {
     }
 },
 
-        remove(index) {
-            const contactName = this.contactoArray[index].nombre;
-         
-            Swal.fire({
-                title: '¿Estás seguro de Eliminar?',
-                text: `El contacto ${contactName} será eliminado.`,
-                color: '#fff',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-                reverseButtons: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.contactoArray.splice(index, 1);
-                    this.updateTypes();
+remove(index) {
+    const originalIndex = this.getList()[index].originalIndex; // Obtén el índice original
+    const contactName = this.contactoArray[originalIndex].nombre;
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Eliminado',
-                        text: 'El contacto ha sido eliminado correctamente.',
-                        color: '#fff',
-                        confirmButtonText: 'OK',
-                    });
-                }
+    Swal.fire({
+        title: '¿Estás seguro de Eliminar?',
+        text: `El contacto ${contactName} será eliminado.`,
+        color: '#fff',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.contactoArray.splice(originalIndex, 1); // Elimina por el índice original
+            this.updateTypes();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Eliminado',
+                text: 'El contacto ha sido eliminado correctamente.',
+                color: '#fff',
+                confirmButtonText: 'OK',
             });
         }
+    });
+}
+
         ,
         edit(index) {
-            this.itemSelected = { ...this.contactoArray[index] };
-            this.indexSelected = index;
-            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-            editModal.show();
-        },
+    const originalIndex = this.getList()[index].originalIndex; // Obtén el índice original
+    this.itemSelected = { ...this.contactoArray[originalIndex] };
+    this.indexSelected = originalIndex; // Guarda el índice original
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    editModal.show();
+}
+,
         saveEdit() {
             this.contactoArray[this.indexSelected] = { ...this.itemSelected };
 
@@ -349,35 +353,33 @@ export default {
             });
         },
         getList() {
+    const searchTerm = this.toSearch.toLowerCase().trim();
+    const selectedName = this.toFilter;
 
-            const searchTerm = this.toSearch.toLowerCase().trim();
-            const selectedName = this.toFilter;
+    return this.contactoArray
+        .map((item, index) => ({ ...item, originalIndex: index })) // Agrega el índice original
+        .filter((item) => {
+            const matchesSearch = searchTerm
+                ? item.nombre.toLowerCase().includes(searchTerm) ||
+                  item.correo.toLowerCase().includes(searchTerm) ||
+                  item.direccion.toLowerCase().includes(searchTerm) ||
+                  item.id.includes(searchTerm) ||
+                  item.telefono.includes(searchTerm) ||
+                  item.pais.toLowerCase().includes(searchTerm) ||
+                  item.ciudad.toLowerCase().includes(searchTerm)
+                : true;
 
-            return this.contactoArray.filter((item) => {
+            const matchesFilter = selectedName ? item.nombre === selectedName : true;
 
-             const matchesSearch = searchTerm
-                    ? item.nombre.toLowerCase().includes(searchTerm) ||
-                    item.correo.toLowerCase().includes(searchTerm) ||
-                    item.direccion.toLowerCase().includes(searchTerm)||
-                    item.id.includes(searchTerm)||
-                    item.telefono.includes(searchTerm)||
-                    item.pais.toLowerCase().includes(searchTerm)||
-                    item.ciudad.toLowerCase().includes(searchTerm)
-                    
-                    : true;
+            return matchesSearch && matchesFilter;
+        });
+}
 
-
-                const matchesFilter = selectedName ? item.nombre === selectedName : true;
-
-                return matchesSearch && matchesFilter;
-            });
-        }
 
 
     }
 }
 </script>
-
 <style>
 .btn {
     margin-right: 3px;
